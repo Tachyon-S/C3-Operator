@@ -20,3 +20,6 @@ Blender scripts to import/export C3 models.
 ## Limitations and Issues
 - Tested on garments.
 - Does not work for all c3 files (not even all garments).
+
+## References
+- [This post on Xentax](https://forum.xentax.com/viewtopic.php?t=5582) is what inspired me to start this project.
