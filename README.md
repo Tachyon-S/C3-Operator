@@ -6,6 +6,7 @@ Blender scripts to import/export C3 models.
 
 ## How to use it
 ## Import 
+For your first experiment it is suggested to use the model "003194790.C3" along with its texture "003194790.dds"
 - Download the script.
 - Open Blender.
 - Remove the cube :p (as usual) by pressing x or delete on the cube.
