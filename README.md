@@ -1,7 +1,7 @@
 # C3-Operator
 Blender scripts to import/export C3 models.
 
-#### version: 1.0
+#### version: 1.1
 #### Blender Tested Versions: 2.79
 
 
@@ -26,7 +26,6 @@ For your first experiment it is suggested to use the model `003194790.C3` along 
 
 ## Limitations and Issues
 - Tested on garments.
-- Does not work for all c3 files (not even all garments).
 
 ## References
 - [This post on Xentax](https://forum.xentax.com/viewtopic.php?t=5582) is what inspired me to start this project.
