@@ -24,6 +24,12 @@ For your first experiment it is suggested to use the model `003194790.C3` along 
 - Go to the end of the script once opened and change the variable `filePath` and `texturePath` to the path of the model `.c3` and the texture `.dds` you want to import respectively.
 - Click `Run Script` (it is found to the right of the open button you clicked previously).
 
+## Import Animation
+Under Construction  
+
+![ezgif-4-ae81d637973e](https://user-images.githubusercontent.com/84657141/119988335-a9ed4700-bfce-11eb-8e33-cb1f1f857f5b.gif)
+
+
 ## Limitations and Issues
 - Tested on garments.
 
