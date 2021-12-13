@@ -27,7 +27,7 @@ Once installed, "C3 Operator" menu will appear on the upper left bar.
 ### Export
 Let's call the model we want to export X.
 - Bake all different materials and textures into a single texture.
-- To avoid working directly with bones and weights, we are going to copy the weights from another model. import the model you are going to mimic its weights. Don't import any other model after it as the path is used in the next step. We will call this model Y. Make sure X is posed similar to how Y is in order for weights to works correctly.
+- To avoid working directly with bones and weights, we are going to copy the weights from another model. import the model you are going to mimic its weights. Don't import any other model after it as the path is used in the next step. We will call this model Y. Make sure X is scaled and posed similar to how Y is in order for weights to works correctly.
 - C3 does not support seams. Instead they duplicate vertices and edges. C3 models are unpacked literally. Therefore just before exporting choose all your seams in edges edit mode, then from the right click menu choose Edge Split.
 - Now choose the mesh X (not the armature) and choose Save C3 Model from C3 Operator menu.
 
