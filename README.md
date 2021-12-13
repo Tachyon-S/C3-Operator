@@ -12,8 +12,9 @@ Example: the model `003194790.C3` posed freely.
 
 ## How to use it
 ### Installation
-Download the zip archive from the [latest release](https://github.com/Tachyon-S/C3-Operator/releases/tag/v2.0.0)
-Go to Edit > Preferences > Add-ons > Install > choose the the zip archive you downloaded.
+Download the zip archive from the [latest release](https://github.com/Tachyon-S/C3-Operator/releases/tag/v2.0.0).
+
+In Blender go to Edit > Preferences > Add-ons > Install > choose the the zip archive you downloaded.
 Then check the box in front of the add-on name if not checked.
 Once installed, "C3 Operator" menu will appear on the upper left bar.
 
