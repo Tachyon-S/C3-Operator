@@ -20,6 +20,8 @@ Once installed, "C3 Operator" menu will appear on the upper left bar.
 ### Notes About Importing
 - To import animation make sure you select the armature and not the mesh.
 - TO import texture make sure you select the mesh and not the armature.
+- Imported models are usually large. You may want to increase your view clipping end found in the (N) menu.
+- With the release you can find models, texture and animations to test with and use as Model Y in the export process (see below).
 
 ### Export
 Let's call the model we want to export X.
