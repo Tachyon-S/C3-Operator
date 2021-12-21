@@ -25,8 +25,9 @@ class C3_Operator_Model_Exporter:
     reference_path = ""
     @staticmethod
     def exportC3UsingRef(outputPath, refPath):
+        isGarment = False
         scene = bpy.context.scene
-        
+            
         print('openning file')
         file = C3OP_Helping_File_Manager_Module.C3OP_Helping_File_Reader(refPath)
         file.load()
@@ -40,15 +41,23 @@ class C3_Operator_Model_Exporter:
             sectionStart = file.getPointer()
             vertCount = 0
             nsize = file.readInt()
+            nsize_w = 0
             try:
-                meshName = file.readString(nsize)
+                meshName = file.readString(nsize)     # may fail with some names such as model 490020
+                nsize_w = nsize
             except:
-                meshName = None
-            if meshName in PHY_section_names:
+                file.setPointer(sectionStart + nsize + 4)
+                meshName = "mesh01"
+                nsize_w = 6
+            print("Section name is: " + meshName)
+            if meshName == "v_armet":
+                isGarment = True
+            if (meshName in PHY_section_names) or (not isGarment and Magic2 != "MOT"):   # if not garemnt, then suppose it has one PHY, just replace it.
                 print('Reading vertices properites from the reference')
                 file.readInt()
-                vertCount_r = file.readInt()
-                file.readInt()
+                #vertCount_r = file.readInt()
+                vertCount_r = file.readInt() + file.readInt()
+                #file.readInt()
                 
                 Vert_array = []
                 UV_array = []
@@ -61,6 +70,8 @@ class C3_Operator_Model_Exporter:
                     vx = file.readFloat()
                     vy = file.readFloat()
                     vz = file.readFloat()
+                    if Magic == 0x20:
+                        file.setPointer(file.getPointer() + 0x24)
                     tu = (file.readFloat())
                     tv = 1 - (file.readFloat())
                     Vert_array.append(Vector((vx,vy,vz)))
@@ -71,8 +82,10 @@ class C3_Operator_Model_Exporter:
                     Unknown4_array.append(file.readFloat())
                     Unknown5_array.append(file.readFloat())
                 
-                FaceCount_r = file.readInt()
+                FaceCount_r = file.readInt() + file.readInt()
                 offsetToAdditional_r = (nsize + 4) + vertCount_r*(20+20) + (4+4+4)+ FaceCount_r*(2+2+2) + (4 + 4)
+                if Magic == 0x20:
+                    offsetToAdditional_r = offsetToAdditional_r + 0x24 * vertCount_r
                 additional_size = sectSize - offsetToAdditional_r
                 
                 print('getting current mesh properties')
@@ -87,7 +100,9 @@ class C3_Operator_Model_Exporter:
                     
                 faces = bm.faces
                 FaceCount = len(bm.faces)
-                sectSize_w = (nsize + 4) + vertCount*(20+20) + (4+4+4)+ FaceCount*(2+2+2) + (4 + 4) + additional_size
+                sectSize_w = (nsize_w + 4) + vertCount*(20+20) + (4+4+4)+ FaceCount*(2+2+2) + (4 + 4) + additional_size
+                if Magic == 0x20:
+                    sectSize_w = sectSize_w + 0x24 * vertCount
                 uvs_x = [None]*vertCount
                 uvs_y = [None]*vertCount
                 
@@ -126,33 +141,35 @@ class C3_Operator_Model_Exporter:
                     Unknown3_w_array[original_vertices[a].index] = Unknown3_array[index]
                     Unknown4_w_array[original_vertices[a].index] = Unknown4_array[index]
                     Unknown5_w_array[original_vertices[a].index] = Unknown5_array[index]
-                
+                    
                 
                 
                 print('**** Writing the patched section ****')
                 fileWriter.writeString(Magic2)
                 fileWriter.writeByte(Magic)
                 fileWriter.writeInt(sectSize_w)
-                fileWriter.writeInt(nsize)
+                fileWriter.writeInt(nsize_w)
                 fileWriter.writeString(meshName)
-                offset = 4 + nsize
+                offset = 4 + nsize_w
                 fileWriter.writeInt(0)
                 fileWriter.writeInt(vertCount)
-                offset = 12 + nsize
+                offset = 12 + nsize_w
                 fileWriter.writeInt(0)
                 
                 for a in range(vertCount):
                     fileWriter.writeFloat(vertices[a].x)
                     fileWriter.writeFloat(vertices[a].y)
                     fileWriter.writeFloat(vertices[a].z)
+                    if Magic == 0x20:
+                        fileWriter.fillZeros(0x24)
                     fileWriter.writeFloat(uvs_x[a])
-                    fileWriter.writeFloat(uvs_y[a])
+                    fileWriter.writeFloat(1-uvs_y[a])
                     fileWriter.writeInt(Unknown1_w_array[a])
                     fileWriter.writeInt(Unknown2_w_array[a])
                     fileWriter.writeInt(Unknown3_w_array[a])
                     fileWriter.writeFloat(Unknown4_w_array[a])
                     fileWriter.writeFloat(Unknown5_w_array[a])
-                    offset = 16 + nsize + (a+1)*(20) + a*(0x14)
+                    offset = 16 + nsize_w + (a+1)*(20) + a*(0x14)
                     
                 fileWriter.writeInt(FaceCount)
                 offset = offset + 0x14 + 4

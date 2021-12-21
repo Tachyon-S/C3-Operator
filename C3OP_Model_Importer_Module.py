@@ -15,7 +15,7 @@ import C3OP_Helping_File_Manager_Module
 import C3OP_Warnings
 PHY_section_names = ['v_body'] # What to do about it?
 
-
+    
 
 
 
@@ -26,6 +26,8 @@ class C3_Operator_Model_Importer:
     
     @staticmethod
     def importC3(filePath):
+        isGarment = False
+        
         #scene = bpy.context.scene        # for Blender 2.79
         scene = bpy.context.collection    # for Blender 2.8+
         meshes = []
@@ -45,9 +47,15 @@ class C3_Operator_Model_Importer:
                 print("Found PHY section at: 0x{:08x}".format(sectionStart-8))
                 print("Section has type: 0x{:02x}".format(Magic))
                 nsize = file.readInt()
-                meshName = file.readString(nsize)
+                try:
+                    meshName = file.readString(nsize)     # may fail with some names such as model 490020
+                except:
+                    file.setPointer(sectionStart + nsize + 4)
+                    meshName = "mesh"
                 print("Section name is: " + meshName)
-                if meshName in PHY_section_names:
+                if meshName == "v_armet":
+                    isGarment = True
+                if (meshName in PHY_section_names) or not isGarment:
                     file.readInt()
                     vertCount = file.readInt()
                     print("The section contains " + str(vertCount) + " vertices")
@@ -169,7 +177,7 @@ class C3_Operator_Model_Importer:
                 type_of_key_frame = file.readString(4)
                 file.readInt()
                 print("MOT section type is: " + type_of_key_frame)
-                if MOT_number == 4:
+                if MOT_number == 4 or not isGarment:
                     bpy.ops.object.mode_set(mode='OBJECT')
                     bpy.ops.object.select_all(action='DESELECT')
                     
