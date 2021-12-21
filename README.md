@@ -1,7 +1,7 @@
 # C3-Operator
 Blender scripts to import/export C3 models.
 
-#### version: 2.0.0
+#### version: 2.1.0
 #### Blender Tested Versions: 2.8+
 
 
@@ -12,7 +12,7 @@ Example: the model `003194790.C3` posed freely.
 
 ## How to use it
 ### Installation
-Download the zip archive from the [latest release](https://github.com/Tachyon-S/C3-Operator/releases/tag/v2.0.0).
+Download the zip archive from the [latest release](https://github.com/Tachyon-S/C3-Operator/releases/tag/v2.1.0).
 
 In Blender go to Edit > Preferences > Add-ons > Install > choose the the zip archive you downloaded.
 Then check the box in front of the add-on name if not checked.
