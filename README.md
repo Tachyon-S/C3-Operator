@@ -30,6 +30,8 @@ Let's call the model we want to export X.
 - To avoid working directly with bones and weights, we are going to copy the weights from another model. import the model you are going to mimic its weights. Don't import any other model after it as the path is used in the next step. We will call this model Y. Make sure X is scaled and posed similar to how Y is in order for weights to works correctly.
 - C3 does not support seams. Instead they duplicate vertices and edges. C3 models are unpacked literally. Therefore just before exporting choose all your seams in edges edit mode, then from the right click menu choose Edge Split.
 - Now choose the mesh X (not the armature) and choose Save C3 Model from C3 Operator menu.
+- This exporting process works for weapons as well, choose a weapon that is similar to the one you want to export and use it as a reference.
+- It is recommended to use models of subtype 0x34 than those of subtype 0x20. Check the [wiki](https://github.com/Tachyon-S/C3-Operator/wiki/C3-Garment-Structure) for the defintion of subtype.
 
 
 ## Changelog
@@ -37,6 +39,9 @@ V 2.0.0:
 - Interaction through GUI
 - No need to chagne the engine to cycles.
 - Added export functionality
+V 2.1.0:
+- Import/Export Weapons
+- Use models of subtype 0x20 as reference for export (still experimental).
 
 ## Limitations and Issues
 - Tested on garments.
