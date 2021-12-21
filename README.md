@@ -39,6 +39,7 @@ V 2.0.0:
 - Interaction through GUI
 - No need to chagne the engine to cycles.
 - Added export functionality
+
 V 2.1.0:
 - Import/Export Weapons
 - Use models of subtype 0x20 as reference for export (still experimental).
