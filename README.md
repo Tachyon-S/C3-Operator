@@ -44,6 +44,15 @@ V 2.1.0:
 - Import/Export Weapons
 - Use models of subtype 0x20 as reference for export (still experimental).
 
+## TODO
+- Normalize different scales, positions and orientations of models and animations.  
+  * Figure out how C3 engine handles different scales.
+- Translate Bone system between c3 and blender.
+  * Add export with custom bones function.
+- Convert (a reduced version of) Blender uv system to C3 uv system.
+  * Automate the process of doubling seams.
+- include hair and effects.
+
 ## Limitations and Issues
 - Tested on garments.
 
