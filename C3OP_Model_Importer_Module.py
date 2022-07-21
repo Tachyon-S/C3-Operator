@@ -248,7 +248,7 @@ class C3_Operator_Model_Importer:
             return
         
         print('openning th animation file')
-        file = C3OP_Helping_File_Reader_Module.C3OP_Helping_File_Reader(animation_path)
+        file = C3OP_Helping_File_Manager_Module.C3OP_Helping_File_Reader(animation_path)
         file.load()
         Magic1 = file.readString(0x10)
         MOT_number = 0
