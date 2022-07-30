@@ -87,7 +87,7 @@ class C3_Operator_Model_Importer:
                     Weight2.append(file.readFloat())
                     
             if Magic == 0x34:
-                for a in range(vertCount):
+                for a in range(vertCount + vertCount2):
                     vx = file.readFloat()
                     vy = file.readFloat()
                     vz = file.readFloat()
