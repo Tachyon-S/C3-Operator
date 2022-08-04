@@ -1,7 +1,7 @@
 # C3-Operator
 Blender scripts to import/export C3 models.
 
-#### version: 2.1.2
+#### version: 2.3
 #### Blender Tested Versions: 2.8+
 
 
