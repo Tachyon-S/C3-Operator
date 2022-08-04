@@ -28,6 +28,7 @@ def register():
     bpy.utils.register_class(C3OP_Model_Importer_Module.C3OP_Open_Texture_UI)
     bpy.utils.register_class(C3OP_Model_Importer_Module.C3OP_Open_Animation_UI)
     bpy.utils.register_class(C3OP_Model_Exporter_Module.C3OP_Save_C3_Mesh_UI)
+    bpy.utils.register_class(C3OP_Model_Exporter_Module.C3OP_Save_C3_With_Armature_UI)
     
     bpy.utils.register_class(C3OP_Menu.TOPBAR_MT_C3_Operator_Menu)
     	
@@ -39,6 +40,7 @@ def unregister():
     bpy.utils.unregister_class(C3OP_Model_Importer_Module.C3OP_Open_Texture_UI)
     bpy.utils.unregister_class(C3OP_Model_Importer_Module.C3OP_Open_Animation_UI)
     bpy.utils.unregister_class(C3OP_Model_Exporter_Module.C3OP_Save_C3_Mesh_UI)
+    bpy.utils.unregister_class(C3OP_Model_Exporter_Module.C3OP_Save_C3_With_Armature_UI)
     
     bpy.utils.unregister_class(C3OP_Menu.TOPBAR_MT_C3_Operator_Menu)
     

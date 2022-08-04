@@ -10,6 +10,7 @@ class TOPBAR_MT_C3_Operator_Menu(bpy.types.Menu):
         layout.operator("c3op.open_texture_ui", text="Import Texture")
         layout.operator("c3op.open_animation_ui", text="Import C3 Animation")
         layout.operator("c3op.save_c3_mesh_ui", text="Save C3 Model")
+        layout.operator("c3op.save_c3_with_armature_ui", text="Save C3 With Armature")
 
     def menu_draw(self, context):
         self.layout.menu("TOPBAR_MT_C3_Operator_Menu", text = "C3 Operator")
