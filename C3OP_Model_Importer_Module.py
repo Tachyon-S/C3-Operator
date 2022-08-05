@@ -23,7 +23,8 @@ class C3_Operator_Model_Importer:
     c3_path = ""
     texture_path = ""
     animation_path = ""
-    
+    #C3_Operator_Model_Importer.v_body_Index = 0
+    v_body_Index = 0
     @staticmethod
     def importC3(filePath):
         isGarment = False
@@ -36,6 +37,8 @@ class C3_Operator_Model_Importer:
         file.load()
         Magic1 = file.readString(0x10)
         MOT_number = 0
+        #v_body_Index = 0
+        v_current_Index = 0
         while True:
             Magic2 = file.readString(0x3)
             Magic = file.readByte()
@@ -44,6 +47,7 @@ class C3_Operator_Model_Importer:
             vertCount = 0
             vertCount2 = 0
             if Magic2 == "PHY":
+                v_current_Index = v_current_Index + 1
                 print("Found PHY section at: 0x{:08x}".format(sectionStart-8))
                 print("Section has type: 0x{:02x}".format(Magic))
                 nsize = file.readInt()
@@ -56,117 +60,118 @@ class C3_Operator_Model_Importer:
                 if meshName == "v_armet":
                     isGarment = True
                 if (meshName in PHY_section_names) or not isGarment:
+                    C3_Operator_Model_Importer.v_body_Index = v_current_Index
                     file.readInt()
                     vertCount = file.readInt()
                     print("The section contains " + str(vertCount) + " vertices")
                     vertCount2 = file.readInt()
                     print("The section contains " + str(vertCount2) + " vertices of type 2")
             
-            Vert_array = []
-            UV_array = []
-            Face_array = []
-            Bone1_indices = []
-            Bone2_indices = []
-            Weight1 = []
-            Weight2 = []
-            if Magic == 0x20:
-                for a in range(vertCount + vertCount2):
-                    vx = file.readFloat()
-                    vy = file.readFloat()
-                    vz = file.readFloat()
-                    file.setPointer(file.getPointer() + 0x24)
-                    tu = (file.readFloat())
-                    tv = 1 - (file.readFloat())
-                    Vert_array.append(Vector((vx,vy,vz)))
-                    UV_array.append(Vector((tu,tv,0)))
+                    Vert_array = []
+                    UV_array = []
+                    Face_array = []
+                    Bone1_indices = []
+                    Bone2_indices = []
+                    Weight1 = []
+                    Weight2 = []
+                    if Magic == 0x20:
+                        for a in range(vertCount + vertCount2):
+                            vx = file.readFloat()
+                            vy = file.readFloat()
+                            vz = file.readFloat()
+                            file.setPointer(file.getPointer() + 0x24)
+                            tu = (file.readFloat())
+                            tv = 1 - (file.readFloat())
+                            Vert_array.append(Vector((vx,vy,vz)))
+                            UV_array.append(Vector((tu,tv,0)))
+                            
+                            file.readInt()
+                            Bone1_indices.append(file.readInt())
+                            Bone2_indices.append(file.readInt())
+                            Weight1.append(file.readFloat())
+                            Weight2.append(file.readFloat())
+                            
+                    if Magic == 0x34:
+                        for a in range(vertCount + vertCount2):
+                            vx = file.readFloat()
+                            vy = file.readFloat()
+                            vz = file.readFloat()
+                            tu = (file.readFloat())
+                            tv = 1 - (file.readFloat())
+                            Vert_array.append(Vector((vx,vy,vz)))
+                            UV_array.append((tu,tv))
+                            
+                            file.readInt()
+                            Bone1_indices.append(file.readInt())
+                            Bone2_indices.append(file.readInt())
+                            Weight1.append(file.readFloat())
+                            Weight2.append(file.readFloat())
+                            
                     
-                    file.readInt()
-                    Bone1_indices.append(file.readInt())
-                    Bone2_indices.append(file.readInt())
-                    Weight1.append(file.readFloat())
-                    Weight2.append(file.readFloat())
-                    
-            if Magic == 0x34:
-                for a in range(vertCount + vertCount2):
-                    vx = file.readFloat()
-                    vy = file.readFloat()
-                    vz = file.readFloat()
-                    tu = (file.readFloat())
-                    tv = 1 - (file.readFloat())
-                    Vert_array.append(Vector((vx,vy,vz)))
-                    UV_array.append((tu,tv))
-                    
-                    file.readInt()
-                    Bone1_indices.append(file.readInt())
-                    Bone2_indices.append(file.readInt())
-                    Weight1.append(file.readFloat())
-                    Weight2.append(file.readFloat())
-                    
-            
-            if len(Vert_array) > 0:
-                FaceCount = file.readInt()
-                print("The section contains " + str(FaceCount) + " faces")
-                FaceCount2 = file.readInt()
-                print("The section contains " + str(FaceCount2) + " faces of type 2")
-                for a in range(FaceCount + FaceCount2):
-                    f1 = (file.readShort()) #+ 1
-                    f2 = (file.readShort()) #+ 1
-                    f3 = (file.readShort()) #+ 1
-                    Face_array.append([f1,f2,f3]) #save faces to Face_array
+                    if len(Vert_array) > 0:
+                        FaceCount = file.readInt()
+                        print("The section contains " + str(FaceCount) + " faces")
+                        FaceCount2 = file.readInt()
+                        print("The section contains " + str(FaceCount2) + " faces of type 2")
+                        for a in range(FaceCount + FaceCount2):
+                            f1 = (file.readShort()) #+ 1
+                            f2 = (file.readShort()) #+ 1
+                            f3 = (file.readShort()) #+ 1
+                            Face_array.append([f1,f2,f3]) #save faces to Face_array
 
-            if len(Vert_array) > 0:
-                
-                new_mesh = bpy.data.meshes.new(meshName)
-                new_mesh.from_pydata(Vert_array, [], Face_array)
-                new_mesh.update()
-                meshes.append(new_mesh)
-                new_object = bpy.data.objects.new(meshName, new_mesh)
-                
-                scene.objects.link(new_object)
-                bpy.context.view_layer.objects.active = new_object # Blender 2.8+
-                #new_object.select = True    # Blender 2.79
-                bpy.context.active_object.select_set(state=True) # Blender 2.8+
-                
-                
-                bpy.ops.object.mode_set(mode='OBJECT')
-                
-                for v in new_object.data.vertices:
-                    try:
-                        new_object.vertex_groups['c3_bone_'+str(Bone1_indices[v.index])]
-                    except:
-                        new_object.vertex_groups.new(name = ('c3_bone_'+str(Bone1_indices[v.index])))
-                    
-                    new_object.vertex_groups['c3_bone_'+str(Bone1_indices[v.index])].add([v.index], Weight1[v.index], 'REPLACE')
-                    
-                    try:
-                        new_object.vertex_groups['c3_bone_'+str(Bone2_indices[v.index])]
-                    except:
-                        new_object.vertex_groups.new(name = ('c3_bone_'+str(Bone2_indices[v.index])))
-                    
-                    new_object.vertex_groups['c3_bone_'+str(Bone2_indices[v.index])].add([v.index], Weight2[v.index], 'REPLACE')
-                
-                
-                bpy.ops.object.mode_set(mode='EDIT')
-                bm = bmesh.from_edit_mesh(new_mesh)
+                    if len(Vert_array) > 0:
+                        
+                        new_mesh = bpy.data.meshes.new(meshName)
+                        new_mesh.from_pydata(Vert_array, [], Face_array)
+                        new_mesh.update()
+                        meshes.append(new_mesh)
+                        new_object = bpy.data.objects.new(meshName, new_mesh)
+                        
+                        scene.objects.link(new_object)
+                        bpy.context.view_layer.objects.active = new_object # Blender 2.8+
+                        #new_object.select = True    # Blender 2.79
+                        bpy.context.active_object.select_set(state=True) # Blender 2.8+
+                        
+                        
+                        bpy.ops.object.mode_set(mode='OBJECT')
+                        
+                        for v in new_object.data.vertices:
+                            try:
+                                new_object.vertex_groups['c3_bone_'+str(Bone1_indices[v.index])]
+                            except:
+                                new_object.vertex_groups.new(name = ('c3_bone_'+str(Bone1_indices[v.index])))
+                            
+                            new_object.vertex_groups['c3_bone_'+str(Bone1_indices[v.index])].add([v.index], Weight1[v.index], 'REPLACE')
+                            
+                            try:
+                                new_object.vertex_groups['c3_bone_'+str(Bone2_indices[v.index])]
+                            except:
+                                new_object.vertex_groups.new(name = ('c3_bone_'+str(Bone2_indices[v.index])))
+                            
+                            new_object.vertex_groups['c3_bone_'+str(Bone2_indices[v.index])].add([v.index], Weight2[v.index], 'REPLACE')
+                        
+                        
+                        bpy.ops.object.mode_set(mode='EDIT')
+                        bm = bmesh.from_edit_mesh(new_mesh)
 
-                uv_layer = bm.loops.layers.uv.verify()
-                #bm.faces.layers.tex.verify() # is this line needed ?
+                        uv_layer = bm.loops.layers.uv.verify()
+                        #bm.faces.layers.tex.verify() # is this line needed ?
 
-                for f in bm.faces:
-                    for l in f.loops:
-                        luv = l[uv_layer]
-                        try:
-                            luv.uv = UV_array[l.vert.index]
-                        except:
-                            luv.uv = UV_array[l.vert.index].xy
+                        for f in bm.faces:
+                            for l in f.loops:
+                                luv = l[uv_layer]
+                                try:
+                                    luv.uv = UV_array[l.vert.index]
+                                except:
+                                    luv.uv = UV_array[l.vert.index].xy
 
-                bmesh.update_edit_mesh(new_mesh)
-                bpy.ops.object.mode_set(mode='OBJECT')
-                
-                # make the bmesh the object's mesh
-                #bm.to_mesh(mesh)  
-                #bm.free()  # always do this when finished
-                print("~~~~~~~~~~~~~~~~~~~~~~~~")
+                        bmesh.update_edit_mesh(new_mesh)
+                        bpy.ops.object.mode_set(mode='OBJECT')
+                        
+                        # make the bmesh the object's mesh
+                        #bm.to_mesh(mesh)  
+                        #bm.free()  # always do this when finished
+                        print("~~~~~~~~~~~~~~~~~~~~~~~~")
             
             if Magic2 == "MOT":
                 MOT_number = MOT_number + 1
@@ -174,10 +179,15 @@ class C3_Operator_Model_Importer:
                 print("Section has type: 0x{:02x}".format(Magic))
                 number_of_bones = file.readInt()
                 file.readInt()
-                type_of_key_frame = file.readString(4)
+                try:
+                    type_of_key_frame = file.readString(4)
+                except:
+                    type_of_key_frame = "Not found!"
+                    file.readInt()
                 file.readInt()
                 print("MOT section type is: " + type_of_key_frame)
-                if MOT_number == 4 or not isGarment:
+                #if MOT_number == 4 or not isGarment:
+                if MOT_number == C3_Operator_Model_Importer.v_body_Index or not isGarment:
                     bpy.ops.object.mode_set(mode='OBJECT')
                     bpy.ops.object.select_all(action='DESELECT')
                     
@@ -253,6 +263,7 @@ class C3_Operator_Model_Importer:
         Magic1 = file.readString(0x10)
         MOT_number = 0
         while MOT_number < 4:
+            
             MOT_number = MOT_number + 1
             Magic2 = file.readString(0x3)
             Magic = file.readByte()
@@ -260,7 +271,9 @@ class C3_Operator_Model_Importer:
             sectionStart = file.getPointer()
             
             
-            if MOT_number == 4:
+            #if MOT_number == 4:
+            if MOT_number == C3_Operator_Model_Importer.v_body_Index:
+                
                 boneCount = file.readInt()
                 frameCount = file.readInt()
                 file.readString(4) # ZKEY
@@ -326,7 +339,7 @@ class C3_Operator_Model_Importer:
                         last_loc_y[j] = loc_y
                         last_loc_z[j] = loc_z
                 
-                
+                break;
             
             file.setPointer(sectionStart+sectSize)
         bpy.ops.object.mode_set(mode='OBJECT')
